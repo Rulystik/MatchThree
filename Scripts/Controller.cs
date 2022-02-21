@@ -4,18 +4,22 @@ using DG.Tweening;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+public enum SwapDirectionEnum
+{
+    Right,
+    Left,
+    Up,
+    Down
+}
 public class Controller
 {
     private Model _model;
     private View _view;
     private PrefabService _prefabService;
     private MenuBehavior _menuBehavior;
-    private Random rnd = new Random();
+    private SwappingBehavior _swapBehavior;
 
     public bool canSwap = true;
-    
-    private Vector2? _startSwapPos;
-    private Vector2? _targetSwapPos;
 
     public List<SwappingActioCall> swapListCall;
 
@@ -27,6 +31,7 @@ public class Controller
         _menuBehavior = menuBehavior;
         
         swapListCall = new List<SwappingActioCall>();
+        _swapBehavior = new SwappingBehavior();
 
         _view.StartButton += PrepareLevelMenu;
         _view.ExitButton += ExitGame;
@@ -41,19 +46,22 @@ public class Controller
         DOVirtual.DelayedCall(0.3f, _menuBehavior.LevelPanelActivity).OnComplete(_menuBehavior.BlackScreenOnOff);
         _menuBehavior.ChangeLevelText(str);
         GetNewPieces();
-        SwapInit();
-
+        SwapActionInit();
     }
 
-    private void SwapInit()
+    private void SwapActionInit()
     {
-        foreach (var swap in swapListCall)
+        for (int i = 0; i < 9; i++)
         {
-            swap.StartPos += StartPosInit;
-            swap.TargetPos += TargetPosInit;
-            swap.ResetPositions += ResetPos;
+            for (int j = 0; j < 9; j++)
+            {
+                var obj = _prefabService.GetSwapActionFromPool(i, j);
+                obj.SwapAction += _swapBehavior.MovingPieces;
+            }
         }
     }
+
+    
 
     public void BackToGame()
     {
@@ -61,19 +69,16 @@ public class Controller
         DOVirtual.DelayedCall(0.3f, _menuBehavior.BlackScreenOnOff);
 
     }
-
     private void GetMenuOnPause()
     {
         _menuBehavior.BlackScreenOnOff();
         DOVirtual.DelayedCall(0.3f, _menuBehavior.MovingPanel);
     }
-
     private void ExitGame()
     {
         // Save progress TODO
         Application.Quit();
     }
-
     private void PrepareLevelMenu()
     {
         _menuBehavior.MovingPanel();
@@ -84,7 +89,6 @@ public class Controller
         
         // UI Level manager action (saved progress) TODO
     }
-
     private void GetNewPieces()
     {
         for (int i = 0; i < _model.WidthField; i++)
@@ -101,35 +105,5 @@ public class Controller
                 _model.SetFieldData(i,j, data);
             }
         }
-    }
-
-    
-
-    private void TargetPosInit(Vector3 pos)
-    {
-        
-    }
-
-    private void SwapFieldData(FieldData startFieldData, FieldData targetFieldData)
-    {
-        var temp = startFieldData.VisibleObject;
-        startFieldData.VisibleObject = targetFieldData.VisibleObject;
-        targetFieldData.VisibleObject = temp;
-    }
-
-    private void StartPosInit(Vector3 pos)
-    {
-        if (canSwap)
-        {
-            _targetSwapPos = null;
-            _startSwapPos = pos;
-            Debug.Log("Start Pos  -   "+pos);
-        }
-    }
-
-    private void ResetPos()
-    {
-        _startSwapPos = null;
-        canSwap = true;
     }
 }

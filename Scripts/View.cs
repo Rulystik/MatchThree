@@ -53,11 +53,9 @@ public class View : MonoBehaviour
     public List<Collider> allPiesecCollider;
     
     public bool canSwipe = true;
-    
-    
+
     [SerializeField] 
     private Camera _camera;
-
 
     private void Start()
      {
@@ -67,16 +65,9 @@ public class View : MonoBehaviour
 
     private void Update()
     {
-        if (Application.platform == RuntimePlatform.Android)
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                Application.Quit();
-            }
-        }
-
     }
-     void CameraInit()
+
+    void CameraInit()
      {
          _camera.transform.position = new Vector3(4, 5.5f, -20);
          _camera.orthographicSize = (9 * _camera.pixelHeight / _camera.pixelWidth * 0.5f)+0.5f; 

@@ -68,8 +68,11 @@ public class PrefabService : MonoBehaviour
             }
         }
     }
-    
 
+    public SwappingActioCall GetSwapActionFromPool(int x, int y)
+    {
+        return poolGameObjects[x, y].GetComponent<SwappingActioCall>();
+    }
     
 
     public FieldData CreateNewField()
