@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -9,7 +10,7 @@ public enum SwapDirectionEnum
     Up,
     Down
 }
-public class SwappingBehavior
+public class MovingBehavior
 {
     private FieldData[,] _fieldData;
     private bool canMove = true;
@@ -19,7 +20,7 @@ public class SwappingBehavior
 
     private List<FieldData> SameObjects;
 
-    public SwappingBehavior(FieldData[,] fieldData)
+    public MovingBehavior(FieldData[,] fieldData)
     {
         _fieldData = fieldData;
         SameObjects = new List<FieldData>();
@@ -31,12 +32,10 @@ public class SwappingBehavior
     
         if (canMove && IsInArrayField(_targetPos))
         {
-            
+            SetCanMove(false);
             SwapFieldDatas(startPos, _targetPos);
 
-            // DOVirtual.DelayedCall(0.35f, () => canMove = true);
-
-            DOVirtual.DelayedCall(.35f, () => SwapFieldDatas(_targetPos, startPos, .35f));
+            SwapFieldDatas(_targetPos, startPos, .35f);
         }
     }
     private bool IsInArrayField(Vector3 pos)
@@ -69,7 +68,6 @@ public class SwappingBehavior
 
     private void SwapFieldDatas(Vector3 start, Vector3 target, float delay = 0)
     {
-        canMove = false;
         int startPosX = (int)start.x;
         int startPosY = (int)start.y;
 
@@ -92,20 +90,19 @@ public class SwappingBehavior
     private void MoveObject(FieldData fieldData, float delay = 0)
     {
         var pos = new Vector3(fieldData.PosX, fieldData.PosY, -0.3f);
-        if (fieldData.VisibleObject.transform.position != pos)
+        if (fieldData.VisibleObject != null && delay > 0)
         {
-            var ff = fieldData.VisibleObject.transform.position;
-            if (delay >.1f)
-            {
-                fieldData.VisibleObject.transform.DOMove(pos, 0.3f).SetDelay(delay).OnComplete(() => canMove = true);
-            }
+            fieldData.VisibleObject.transform.DOMove(pos, 0.3f).SetDelay(delay).OnComplete(()=>SetCanMove(true));
+        }
+        if (fieldData.VisibleObject != null)
+        {
             fieldData.VisibleObject.transform.DOMove(pos, 0.3f).SetDelay(delay);
         }
+
     }
 
-
-    private void SeachMatchesAt(int x, int y)
+    public void SetCanMove(bool state)
     {
-        
+        canMove = state;
     }
 }

@@ -11,7 +11,7 @@ public class Controller
     private View _view;
     private PrefabService _prefabService;
     private MenuBehavior _menuBehavior;
-    private SwappingBehavior _swapBehavior;
+    private MovingBehavior _swapBehavior;
 
     public bool canSwap = true;
 
@@ -25,7 +25,7 @@ public class Controller
         _menuBehavior = menuBehavior;
         
         swapListCall = new List<SwappingActioCall>();
-        _swapBehavior = new SwappingBehavior(_model.GetFieldData());
+        _swapBehavior = new MovingBehavior(_model.GetFieldData());
 
         _view.StartButton += PrepareLevelMenu;
         _view.ExitButton += ExitGame;
