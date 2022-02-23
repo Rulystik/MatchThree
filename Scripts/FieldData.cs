@@ -12,6 +12,7 @@ public class FieldData
     public TileType TileType { get; set;}
     public GameObject VisibleObject { get; set;}
     public GameObject BgTile { get; set; }
+    private IDestroyable _destoy;
 
 
 }

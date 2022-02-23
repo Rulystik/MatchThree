@@ -11,7 +11,7 @@ public class SwappingActioCall : MonoBehaviour
     private bool ableToCheck;
     public string m_Text;
     
-    public Action<Vector2, SwapDirectionEnum> SwapAction;
+    public Action<Vector3, SwapDirectionEnum> SwapAction;
 
     private void Start()
     {

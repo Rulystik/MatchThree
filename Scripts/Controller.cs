@@ -4,13 +4,7 @@ using DG.Tweening;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public enum SwapDirectionEnum
-{
-    Right,
-    Left,
-    Up,
-    Down
-}
+
 public class Controller
 {
     private Model _model;
@@ -31,7 +25,7 @@ public class Controller
         _menuBehavior = menuBehavior;
         
         swapListCall = new List<SwappingActioCall>();
-        _swapBehavior = new SwappingBehavior();
+        _swapBehavior = new SwappingBehavior(_model.GetFieldData());
 
         _view.StartButton += PrepareLevelMenu;
         _view.ExitButton += ExitGame;
@@ -56,13 +50,10 @@ public class Controller
             for (int j = 0; j < 9; j++)
             {
                 var obj = _prefabService.GetSwapActionFromPool(i, j);
-                obj.SwapAction += _swapBehavior.MovingPieces;
+                obj.SwapAction += _swapBehavior.SwapPieces;
             }
         }
     }
-
-    
-
     public void BackToGame()
     {
         _menuBehavior.MovingPanel();
@@ -98,7 +89,7 @@ public class Controller
                 FieldData data = _prefabService.CreateNewField();
                 data.PosX = i;
                 data.PosY = j;
-                data.VisibleObject.transform.position = new Vector3(i, j,-0.2f);
+                data.VisibleObject.transform.position = new Vector3(i, j, -0.2f);
                 swapListCall.Add(data.VisibleObject.GetComponent<SwappingActioCall>());
                 data.BgTile.transform.position = new Vector3(i, j,0);
                 data.VisibleObject.name = data.DotColor.ToString() + (data.PosX, data.PosY);

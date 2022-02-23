@@ -33,6 +33,10 @@ public class Model
     //         }
     //     }
     // }
+    public FieldData[,] GetFieldData()
+    {
+        return fieldDatas;
+    }
 
     public FieldData GetField(int x, int y)
     {
